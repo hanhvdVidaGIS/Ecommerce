@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+/* Màu nền tảng của Admin. --accent được ghi đè lúc chạy bằng màu chủ đạo trong cấu hình website (xem lib/theme.ts). */
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --surface-2: #f0f2f5;
+  --border: #e3e6ea;
+  --text: #111827;
+  --muted: #6b7280;
+  --accent: #111827;
+  --accent-fg: #ffffff;
+  --danger: #dc2626;
+  --success: #15803d;
+  --warning: #b45309;
+  --ring: rgb(17 24 39 / 0.25);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --font-sans: var(--font-family, "Inter"), ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+}
+
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Trình soạn thảo văn bản (TipTap) */
+.rte-content { min-height: 220px; padding: 12px; outline: none; }
+.rte-content h1 { font-size: 1.5rem; font-weight: 700; margin: 0.6em 0 0.3em; }
+.rte-content h2 { font-size: 1.25rem; font-weight: 700; margin: 0.6em 0 0.3em; }
+.rte-content h3 { font-size: 1.1rem; font-weight: 600; margin: 0.6em 0 0.3em; }
+.rte-content p { margin: 0.5em 0; }
+.rte-content ul { list-style: disc; padding-left: 1.4em; margin: 0.5em 0; }
+.rte-content ol { list-style: decimal; padding-left: 1.4em; margin: 0.5em 0; }
+.rte-content a { color: #2563eb; text-decoration: underline; }
+.rte-content img { max-width: 100%; height: auto; border-radius: 6px; }
+.rte-content blockquote { border-left: 3px solid var(--border); padding-left: 12px; color: var(--muted); margin: 0.6em 0; }
+.rte-content p.is-editor-empty:first-child::before { content: attr(data-placeholder); color: var(--muted); float: left; height: 0; pointer-events: none; }
+
+@keyframes skeleton { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+.skeleton { animation: skeleton 1.4s ease-in-out infinite; background: var(--surface-2); border-radius: 6px; }
+
+@media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }
+
+/* In phiếu (window.print): bỏ menu và thanh trên, để nội dung chảy hết trang. */
+@media print {
+  html, body, #root { height: auto; background: var(--surface); }
+  #root > div { display: block; height: auto; }
+  aside, header { display: none !important; }
+  main { overflow: visible !important; padding: 0 !important; }
+}
