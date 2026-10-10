@@ -1,0 +1,80 @@
+name: CI
+
+# Chạy test cho mỗi lần push (mọi nhánh) và mỗi pull request. Ba phần độc lập nên lỗi ở một phần không che lỗi ở phần khác.
+on:
+  push:
+  pull_request:
+
+# Push mới lên cùng một nhánh thì huỷ lượt chạy cũ còn dở.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend (.NET 9)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - name: Khôi phục gói
+        run: dotnet restore backend/Ccp.sln
+      - name: Build
+        run: dotnet build backend/Ccp.sln --no-restore -c Release
+      # Test tích hợp chạy trên PostgreSQL thật qua Testcontainers (runner Ubuntu có sẵn Docker).
+      - name: Test
+        run: dotnet test backend/Ccp.sln --no-build -c Release --logger "trx;LogFileName=backend.trx" --results-directory TestResults
+      - name: Lưu kết quả test
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-results
+          path: TestResults
+          retention-days: 7
+
+  admin:
+    name: Admin (React/Vite)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: admin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: admin/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  storefront:
+    name: Storefront (Next.js)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: storefront
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: storefront/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      # Build không cần API chạy (các trang dựng khi có yêu cầu), nên chạy được trên runner trống.
+      - run: npm run build
+        env:
+          API_URL: http://127.0.0.1:9

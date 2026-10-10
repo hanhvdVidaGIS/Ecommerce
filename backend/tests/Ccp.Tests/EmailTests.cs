@@ -20,6 +20,7 @@ public sealed class MailpitFixture : IAsyncLifetime
         .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(8025).ForPath("/api/v1/info")))
         .Build();
 
+    public string SmtpHost => _container.Hostname;
     public int SmtpPort => _container.GetMappedPublicPort(1025);
     public string ApiBase => $"http://{_container.Hostname}:{_container.GetMappedPublicPort(8025)}";
     public Task InitializeAsync() => _container.StartAsync();
@@ -30,7 +31,7 @@ public class EmailTests(MailpitFixture mail) : IClassFixture<MailpitFixture>
 {
     private SmtpEmailSender Sender() => new(Options.Create(new SmtpOptions
     {
-        Host = "localhost", Port = mail.SmtpPort, Security = "None", FromAddress = "shop@example.test", FromName = "Cửa hàng Thử",
+        Host = mail.SmtpHost, Port = mail.SmtpPort, Security = "None", FromAddress = "shop@example.test", FromName = "Cửa hàng Thử",
     }), NullLogger<SmtpEmailSender>.Instance);
 
     private async Task<JsonElement> LastMessageAsync(string to)
