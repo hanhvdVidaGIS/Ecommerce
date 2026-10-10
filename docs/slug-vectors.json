@@ -1,0 +1,15 @@
+{
+  "$comment": "Vector kiểm thử dùng chung cho hàm tạo slug ở backend (Slugger.Slugify) và Admin (slugify). Hai bản cài đặt phải cho cùng kết quả.",
+  "cases": [
+    { "input": "Nước hoa nam", "slug": "nuoc-hoa-nam" },
+    { "input": "Đặc biệt  &  Mới!", "slug": "dac-biet-moi" },
+    { "input": "  --Áo khoác--  ", "slug": "ao-khoac" },
+    { "input": "Étoile Rose Blanche", "slug": "etoile-rose-blanche" },
+    { "input": "Lạc Hương Trầm", "slug": "lac-huong-tram" },
+    { "input": "Gift Set 2026", "slug": "gift-set-2026" },
+    { "input": "Quần/Áo (nam)", "slug": "quan-ao-nam" },
+    { "input": "ĐỒNG HỒ", "slug": "dong-ho" },
+    { "input": "", "slug": "" },
+    { "input": "!!!", "slug": "" }
+  ]
+}

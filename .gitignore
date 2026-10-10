@@ -1,0 +1,25 @@
+# Bí mật và cấu hình cục bộ
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+
+# .NET
+bin/
+obj/
+*.user
+.vs/
+
+# Node
+node_modules/
+.next/
+dist/
+
+# Tệp tải lên khi chạy local
+uploads/
+
+# Hệ điều hành / IDE
+.DS_Store
+Thumbs.db
+.idea/
+backend/src/Ccp.Api/uploads/
